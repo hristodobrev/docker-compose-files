@@ -1,0 +1,54 @@
+version: '3.3'
+
+services:
+  wordpress_db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpressdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: StrongPassword1!2@3#
+      MYSQL_RANDOM_ROOT_PASSWORD: StrongPassword1!2@3#
+    expose:
+      - 3306
+      - 33060
+    networks:
+      - wp_network
+    volumes:
+      - db:/var/lib/mysql
+
+  wordpress_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: wordpress_db
+      MYSQL_ROOT_PASSWORD: StrongPassword1!2@3#
+    restart: always
+    ports:
+      - 8081:80
+    depends_on:
+      - wordpress_db
+    networks:
+      - wp_network
+
+  wordpress_website:
+    image: wordpress:latest
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      WORDPRESS_DB_HOST: wordpress_db
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: StrongPassword1!2@3#
+      WORDPRESS_DB_NAME: wordpressdb
+      WORDPRESS_DEBUG: 1
+    networks:
+      - wp_network
+    volumes:
+      - wordpress:/var/www/html
+
+volumes:
+  wordpress:
+  db:
+
+networks:
+  wp_network:
