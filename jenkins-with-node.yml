@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  jenkins:
+    container_name: jenkins
+    image: chrisdobrev/jenkins-with-node
+    volumes:
+      - jenkins-data:/var/jenkins_home
+    ports:
+      - 8080:8080
+      - 50000:50000
+    networks:
+      - jenkins_network
+    restart: on-failure
+
+volumes:
+  jenkins-data:
+
+networks:
+  jenkins_network:
